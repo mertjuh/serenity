@@ -33,7 +33,7 @@ use std::{
 };
 use tokio::{
     task::JoinHandle,
-    time::{delay_for, timeout},
+    time::{sleep, timeout},
     net::{
         UdpSocket,
         udp::{RecvHalf, SendHalf},
@@ -816,7 +816,7 @@ async fn start_ws_task(mut stream: SplitStream<WsStream>, tx: &Sender<ReceiverSt
             }
 
             const TO_SLEEP: Duration = Duration::from_millis(25);
-            delay_for(TO_SLEEP).await;
+            sleep(TO_SLEEP).await;
         }
 
         info!("[Voice] WebSocket task exited.");

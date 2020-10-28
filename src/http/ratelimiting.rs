@@ -57,7 +57,7 @@ use std::{
     i64,
     u64,
 };
-use tokio::time::{delay_for, Duration};
+use tokio::time::{sleep, Duration};
 use super::{HttpError, Request};
 use tracing::{debug, instrument};
 
@@ -214,7 +214,7 @@ impl Ratelimiter {
                     Ok(
                         if let Some(retry_after) = parse_header::<u64>(&response.headers(), "retry-after")? {
                             debug!("Ratelimited on route {:?} for {:?}ms", route, retry_after);
-                            delay_for(Duration::from_millis(retry_after)).await;
+                            sleep(Duration::from_millis(retry_after)).await;
 
                             true
                         } else {
@@ -291,7 +291,7 @@ impl Ratelimit {
                 delay.as_millis(),
             );
 
-            delay_for(delay).await;
+            sleep(delay).await;
 
             return;
         }
@@ -321,7 +321,7 @@ impl Ratelimit {
             false
         } else if let Some(retry_after) = parse_header::<u64>(&response.headers(), "retry-after")? {
             debug!("Ratelimited on route {:?} for {:?}ms", route, retry_after);
-            delay_for(Duration::from_millis(retry_after)).await;
+            sleep(Duration::from_millis(retry_after)).await;
 
             true
         } else {
